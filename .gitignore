@@ -1,0 +1,17 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Java / Maven
+**/target/
+**/.classpath
+**/.project
+**/.settings/
+
+# Node.js / React
+**/node_modules/
+**/dist/
+
+# macOS
+.DS_Store

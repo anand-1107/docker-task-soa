@@ -1,0 +1,57 @@
+services:
+  postgresdb:
+    image: postgres:16-alpine
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: anand
+      POSTGRES_PASSWORD: "1107"
+      POSTGRES_DB: dockertaskdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - springboot-postgres-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U anand -d dockertaskdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./docker-task-backend/ExamSchedule
+      dockerfile: backend.Dockerfile
+    container_name: docker-springboot
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/dockertaskdb
+      SPRING_DATASOURCE_USERNAME: anand
+      SPRING_DATASOURCE_PASSWORD: "1107"
+      SERVER_PORT: 8080
+    ports:
+      - "8081:8080"
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - springboot-postgres-net
+
+  frontend:
+    build:
+      context: ./docker-task-frontend
+      dockerfile: frontend.Dockerfile
+    container_name: docker-react
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: on-failure
+    networks:
+      - springboot-postgres-net
+
+volumes:
+  postgres_data:
+
+networks:
+  springboot-postgres-net:
