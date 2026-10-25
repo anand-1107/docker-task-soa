@@ -12,16 +12,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - springboot-postgres-net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U anand -d dockertaskdb"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
 
   backend:
-    build:
-      context: ./docker-task-backend/ExamSchedule
-      dockerfile: backend.Dockerfile
+    image: anand110706/docker-backend-2400030220:latest
     container_name: docker-springboot
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/dockertaskdb
@@ -31,16 +24,13 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      postgresdb:
-        condition: service_healthy
+      - postgresdb
     restart: on-failure
     networks:
       - springboot-postgres-net
 
   frontend:
-    build:
-      context: ./docker-task-frontend
-      dockerfile: frontend.Dockerfile
+    image: anand110706/docker-frontend-2400030220:latest
     container_name: docker-react
     ports:
       - "3000:80"
