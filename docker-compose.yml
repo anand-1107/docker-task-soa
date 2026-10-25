@@ -15,6 +15,7 @@ services:
 
   backend:
     image: anand110706/docker-backend-2400030220:latest
+    platform: linux/amd64
     container_name: docker-springboot
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/dockertaskdb
@@ -31,6 +32,7 @@ services:
 
   frontend:
     image: anand110706/docker-frontend-2400030220:latest
+    platform: linux/amd64
     container_name: docker-react
     ports:
       - "3000:80"
